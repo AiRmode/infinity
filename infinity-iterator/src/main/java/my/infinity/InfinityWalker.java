@@ -56,6 +56,11 @@ public class InfinityWalker implements Runnable, Serializable {
 //        infinityWalker.walkStack(0);
     }
 
+    @Override
+    public void run() {
+        walkStack(0);
+    }
+
     public void walkStack(int startingIndex) {
         for (int index = 0; index <= sourceArray.length; index++) {
             FrameItem frame = new FrameItem(index, minValue);
@@ -68,7 +73,7 @@ public class InfinityWalker implements Runnable, Serializable {
             FrameItem frame = stack.peek();
             if (frame.index == sourceArray.length) {
 //                System.out.println(Arrays.toString(sourceArray));
-                DataSnapshotStorage.getMap().put(dataConfig, sourceArray);
+                storeArrayCopy();
                 stack.pop();
                 continue;
             }
@@ -88,6 +93,12 @@ public class InfinityWalker implements Runnable, Serializable {
         }
     }
 
+    private void storeArrayCopy() {
+        Byte[] copy = new Byte[sourceArray.length];
+        System.arraycopy(sourceArray, 0, copy, 0, sourceArray.length);
+        DataSnapshotStorage.getMap().put(dataConfig, copy);
+    }
+
     public Stack<FrameItem> getStack() {
         return stack;
     }
@@ -96,8 +107,7 @@ public class InfinityWalker implements Runnable, Serializable {
         return sourceArray;
     }
 
-    @Override
-    public void run() {
-        walkStack(0);
+    public DataConfig getDataConfig() {
+        return dataConfig;
     }
 }

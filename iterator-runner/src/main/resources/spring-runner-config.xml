@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="3"/>
-        <property name="maxPoolSize" value="4"/>
-        <property name="queueCapacity" value="10"/>
+        <property name="corePoolSize" value="2"/>
+        <property name="maxPoolSize" value="3"/>
+        <property name="queueCapacity" value="5"/>
     </bean>
 
     <bean id="taskExecutorManager" class="my.infinity.concurrent.TaskExecutorManager">
