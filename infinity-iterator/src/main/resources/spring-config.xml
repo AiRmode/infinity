@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="vga256config" class="my.infinity.dataConfig.ResolutionColorConfig">
+        <property name="depth" value="1"/>
+        <property name="height" value="480"/>
+        <property name="width" value="640"/>
+        <property name="maxValue" value="127"/>
+        <property name="minValue" value="-128"/>
+    </bean>
+
+    <bean name="vga65kConfig" class="my.infinity.dataConfig.ResolutionColorConfig">
+        <property name="depth" value="3"/>
+        <property name="height" value="480"/>
+        <property name="width" value="640"/>
+        <property name="maxValue" value="127"/>
+        <property name="minValue" value="-128"/>
+    </bean>
+
+    <bean name="vga256Walker" class="my.infinity.InfinityWalker">
+        <constructor-arg ref="vga256config"/>
+    </bean>
+
+    <bean name="vga65kWalker" class="my.infinity.InfinityWalker">
+        <constructor-arg ref="vga65kConfig"/>
+    </bean>
+</beans>
