@@ -96,7 +96,7 @@ public class InfinityWalker implements Runnable, Serializable {
     private void storeArrayCopy() {
         Byte[] copy = new Byte[sourceArray.length];
         System.arraycopy(sourceArray, 0, copy, 0, sourceArray.length);
-        DataSnapshotHolder dataSnapshotHolder = new DataSnapshotHolder(copy, stack);
+        DataSnapshotHolder dataSnapshotHolder = new DataSnapshotHolder(copy, stack, dataConfig);
         DataSnapshotStorage.getMap().put(dataConfig, dataSnapshotHolder);
     }
 

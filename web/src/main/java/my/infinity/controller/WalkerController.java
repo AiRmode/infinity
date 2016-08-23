@@ -92,6 +92,14 @@ public class WalkerController {
         return DataSnapshotStorage.getMap().get(dataConfig);
     }
 
+    @RequestMapping(value = "/testStateJSON", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    DataSnapshotHolder testStateJSON() {
+        DataConfig dataConfig = testWalker.getDataConfig();
+        return DataSnapshotStorage.getMap().get(dataConfig);
+    }
+
     @RequestMapping(value = "/vga65KStateJSON", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody

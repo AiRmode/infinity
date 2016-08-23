@@ -1,5 +1,7 @@
 package my.infinity;
 
+import my.infinity.dataConfig.DataConfig;
+
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -9,10 +11,12 @@ import java.util.Stack;
 public class DataSnapshotHolder {
     private Byte[] array;
     private Stack<FrameItem> stack;
+    private DataConfig dataConfig;
 
-    public DataSnapshotHolder(Byte[] array, Stack<FrameItem> stack) {
+    public DataSnapshotHolder(Byte[] array, Stack<FrameItem> stack, DataConfig dataConfig) {
         this.array = array;
         this.stack = stack;
+        this.dataConfig = dataConfig;
     }
 
     public Byte[] getArray() {
@@ -31,6 +35,14 @@ public class DataSnapshotHolder {
         this.stack = stack;
     }
 
+    public DataConfig getDataConfig() {
+        return dataConfig;
+    }
+
+    public void setDataConfig(DataConfig dataConfig) {
+        this.dataConfig = dataConfig;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,7 +52,8 @@ public class DataSnapshotHolder {
 
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(array, that.array)) return false;
-        return !(stack != null ? !stack.equals(that.stack) : that.stack != null);
+        if (stack != null ? !stack.equals(that.stack) : that.stack != null) return false;
+        return !(dataConfig != null ? !dataConfig.equals(that.dataConfig) : that.dataConfig != null);
 
     }
 
@@ -48,6 +61,7 @@ public class DataSnapshotHolder {
     public int hashCode() {
         int result = array != null ? Arrays.hashCode(array) : 0;
         result = 31 * result + (stack != null ? stack.hashCode() : 0);
+        result = 31 * result + (dataConfig != null ? dataConfig.hashCode() : 0);
         return result;
     }
 }
