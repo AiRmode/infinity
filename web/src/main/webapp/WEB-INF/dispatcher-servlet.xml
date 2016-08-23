@@ -12,7 +12,6 @@
 
     <context:component-scan base-package="my.infinity"/>
     <context:annotation-config/>
-    <mvc:annotation-driven/>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix">
@@ -23,4 +22,7 @@
         </property>
     </bean>
 
+    <mvc:resources mapping="/js/**" location="/WEB-INF/js/" cache-period="31556926"/>
+
+    <mvc:annotation-driven/>
 </beans>

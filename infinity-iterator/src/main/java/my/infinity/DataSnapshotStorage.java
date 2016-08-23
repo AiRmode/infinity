@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DataSnapshotStorage {
 
-    private final static Map<DataConfig, Byte[]> map = new ConcurrentHashMap<>();
+    private final static Map<DataConfig, DataSnapshotHolder> map = new ConcurrentHashMap<>();
 
-    public static Map<DataConfig, Byte[]> getMap() {
+    public static Map<DataConfig, DataSnapshotHolder> getMap() {
         return map;
     }
 }
