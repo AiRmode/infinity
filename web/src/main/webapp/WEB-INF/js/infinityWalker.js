@@ -60,7 +60,7 @@ function toConsole(array) {
 
 function createImage(array, dataConfig) {
     // create an offscreen canvas
-    var canvas = document.createElement("canvas");
+    var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
     // size the canvas to your desired image
@@ -90,12 +90,5 @@ function createImage(array, dataConfig) {
     // set the img.src to the canvas data url
     image.src = canvas.toDataURL();
 
-    // append the new img object to the page
-    if (isFirstLap) {
-        document.body.appendChild(image);
-        isFirstLap = false;
-    } else {
-        document.body.replaceChild(image, prevImage);
-    }
-    prevImage = image;
+    ctx.drawImage(image, 0, 0);
 }

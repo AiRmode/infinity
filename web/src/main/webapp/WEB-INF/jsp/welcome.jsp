@@ -4,6 +4,7 @@
 </head>
 <body>
 <h2>Welcome!</h2>
+<canvas height='240' width='320' id='canvas'>Обновите браузер</canvas>
 <script async src="../js/infinityWalker.js"></script>
 
 <input type="checkbox" id="isInterrupted"/>
