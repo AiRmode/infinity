@@ -4,7 +4,12 @@
 </head>
 <body>
 <h2>Welcome!</h2>
-<script defer src="../js/infinityWalker.js"></script>
+<script async src="../js/infinityWalker.js"></script>
+
+<input type="checkbox" id="isInterrupted"/>
+
+<div id="txtAge" style="display:none">Stop psycodelica?</div>
+
 <script>
     'use strict';
     console.log('Hello:)');
