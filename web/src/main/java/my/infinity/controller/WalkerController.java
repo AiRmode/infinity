@@ -40,7 +40,6 @@ public class WalkerController {
             taskExecutorManager.execute(infinityVGA256Walker);
             taskExecutorManager.execute(infinityVGA65KWalker);
             taskExecutorManager.execute(infinityQVGA256Walker);
-            taskExecutorManager.execute(testWalker);
         }
     }
 

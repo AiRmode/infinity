@@ -9,13 +9,32 @@
     var w = window;
     requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
-//getDataJSON('testStateJSON');
-    getDataJSON('qvga256StateJSON').then(function (json) {
-        jArray = json.array;
-        jStack = json.stack;
-        jDataConfig = json.dataConfig;
-        startProcess();
+    $("#qvga256").on("click", function () {
+        console.log('qvga256');
+        startCustomWalker('qvga256StateJSON');
     });
+
+    $("#vga256").on("click", function () {
+        console.log('vga256');
+        startCustomWalker('vga256StateJSON');
+    });
+
+    $("#vga65k").on("click", function () {
+        console.log('vga65k');
+        startCustomWalker('vga65KStateJSON');
+    });
+
+    startCustomWalker('qvga256StateJSON');
+
+    function startCustomWalker(url) {
+        getDataJSON(url).then(function (json) {
+            jArray = json.array;
+            jStack = json.stack;
+            jDataConfig = json.dataConfig;
+            startProcess();
+        });
+    }
+
 
     function getDataJSON(urlPath) {
         return $.getJSON(urlPath, {}, function (json) {
@@ -67,12 +86,22 @@
 
         // manipulate some pixel elements
         var arrayPointer = 0;
-        for (var i = 0; i < data.length; i += 4) {
-            data[i] = ((array[arrayPointer] + -dataConfig.elementMinValue) & 0xE0); // set every red pixel element to 255
-            data[i + 1] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x1C) << 3); // set every green pixel element to 255
-            data[i + 2] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x3) << 6); // set every blue pixel element to 255
-            data[i + 3] = 255; // make this pixel opaque
-            arrayPointer++;
+        if (dataConfig.depth == 1) {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] = ((array[arrayPointer] + -dataConfig.elementMinValue) & 0xE0); // set every red pixel element to 255
+                data[i + 1] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x1C) << 3); // set every green pixel element to 255
+                data[i + 2] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x3) << 6); // set every blue pixel element to 255
+                data[i + 3] = 255; // make this pixel opaque
+                arrayPointer++;
+            }
+        } else if (dataConfig.depth == 3) {
+            for (var j = 0; j < data.length; j += 4) {
+                data[j] = array[arrayPointer] + -dataConfig.elementMinValue; // set every red pixel element to 255
+                data[j + 1] = array[++arrayPointer] + -dataConfig.elementMinValue; // set every green pixel element to 255
+                data[j + 2] = array[++arrayPointer] + -dataConfig.elementMinValue; // set every blue pixel element to 255
+                data[j + 3] = 255; // make this pixel opaque
+                arrayPointer++;
+            }
         }
 
         // put the modified pixels back on the canvas

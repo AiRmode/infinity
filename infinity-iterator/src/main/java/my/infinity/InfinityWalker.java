@@ -14,7 +14,9 @@ public class InfinityWalker implements Runnable, Serializable {
     public static final int SAVE_INTERVAL_IN_ITERATIONS = 100000;
     public static final int START_NEW_INFINITY_WALK = 0;
     public static final int CONTINUE_FROM_BACKUP_STATE = -1;
-    public static final String BACKUP_FILENAME_SUFFIX = "backupState.out";
+    public static final String BACKUP_FILE_EXTENTION = ".out";
+    public static final String BACKUP_FILENAME_SUFFIX = "backupState" + BACKUP_FILE_EXTENTION;
+    private static final long serialVersionUID = 1548590164256893622L;
     private volatile Byte[] sourceArray;
     private volatile Byte[] filledArray;
     @SuppressWarnings("all")
@@ -158,13 +160,13 @@ public class InfinityWalker implements Runnable, Serializable {
         try (FileInputStream fis = new FileInputStream(file.getName());
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             InfinityWalker walker = (InfinityWalker) ois.readObject();
-            restoreFromSerialized(walker);
+            restoreStateFromSerialized(walker);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void restoreFromSerialized(InfinityWalker walker) {
+    private void restoreStateFromSerialized(InfinityWalker walker) {
         this.sourceArray = walker.sourceArray;
         this.filledArray = walker.filledArray;
         this.dataConfig = walker.dataConfig;
