@@ -1,94 +1,89 @@
 /**
  * Created by alexey on 22.08.16.
  */
-'use strict';
-var interrupt = false;
-var isFirstLap = true;
-var prevImage;
+(function () {
+    'use strict';
+
+    var jArray, jStack, jDataConfig;
+    var w = window;
+    requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
 //getDataJSON('testStateJSON');
-getDataJSON('qvga256StateJSON');
-
-function getDataJSON(urlPath) {
-    $(document).ready(function () {
-        $.getJSON(urlPath, {}, function (json) {
-            walk(json.array, json.stack, json.dataConfig);
-        });
+    getDataJSON('qvga256StateJSON').then(function (json) {
+        jArray = json.array;
+        jStack = json.stack;
+        jDataConfig = json.dataConfig;
+        startProcess();
     });
-}
 
-function isInterrupted() {
-    return false;
-    //if ($("#isInterrupted").is(':checked'))
-    //    return true;
-    //else
-    //    return false;
-}
+    function getDataJSON(urlPath) {
+        return $.getJSON(urlPath, {}, function (json) {
+            return json;
+        });
+    }
 
-function walk(array, stack, dataConfig) {
-    while (stack.length != 0) {
-        if (isInterrupted()) {
-            break;
-        }
-        var frame = stack.pop();
-        stack.push(frame);
-        if (frame.index == array.length) {
-            createImage(array, dataConfig);
-            stack.pop();
-            continue;
-        }
+    function startProcess() {
+        walk();
+        requestAnimationFrame(startProcess);
+    }
 
-        if (frame.value < dataConfig.elementMaxValue) {
-            array[frame.index] = ++frame.value;
-            var nextIndex = frame.index;
-            while (nextIndex != array.length) {
-                stack.push({index: nextIndex + 1, value: dataConfig.elementMinValue});
-                nextIndex++;
+    function walk() {
+        while (jStack.length != 0) {
+            var frame = jStack.pop();
+            jStack.push(frame);
+            if (frame.index == jArray.length) {
+                createImage(jArray, jDataConfig);
+                jStack.pop();
+                break;
             }
-        } else {
-            array[frame.index] = dataConfig.elementMinValue;
-            stack.pop();
+
+            if (frame.value < jDataConfig.elementMaxValue) {
+                jArray[frame.index] = ++frame.value;
+                var nextIndex = frame.index;
+                while (nextIndex != jArray.length) {
+                    jStack.push({index: nextIndex + 1, value: jDataConfig.elementMinValue});
+                    nextIndex++;
+                }
+            } else {
+                jArray[frame.index] = jDataConfig.elementMinValue;
+                jStack.pop();
+            }
         }
     }
-}
 
+    function createImage(array, dataConfig) {
+        // create an offscreen canvas
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
 
-function toConsole(array) {
-    //$("p").append("", '!!Byte array from server: ' + '</br>' + array + '</br>');
-    //console.log(array);
-}
+        // size the canvas to your desired image
+        canvas.width = dataConfig.width;
+        canvas.height = dataConfig.height;
 
-function createImage(array, dataConfig) {
-    // create an offscreen canvas
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
+        // get the imageData and pixel array from the canvas
+        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imgData.data;
 
-    // size the canvas to your desired image
-    canvas.width = dataConfig.width;
-    canvas.height = dataConfig.height;
+        // manipulate some pixel elements
+        var arrayPointer = 0;
+        for (var i = 0; i < data.length; i += 4) {
+            data[i] = ((array[arrayPointer] + -dataConfig.elementMinValue) & 0xE0); // set every red pixel element to 255
+            data[i + 1] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x1C) << 3); // set every green pixel element to 255
+            data[i + 2] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x3) << 6); // set every blue pixel element to 255
+            data[i + 3] = 255; // make this pixel opaque
+            arrayPointer++;
+        }
 
-    // get the imageData and pixel array from the canvas
-    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    var data = imgData.data;
+        // put the modified pixels back on the canvas
+        ctx.putImageData(imgData, 0, 0);
 
-    // manipulate some pixel elements
-    var arrayPointer = 0;
-    for (var i = 0; i < data.length; i += 4) {
-        data[i] = ((array[arrayPointer] + -dataConfig.elementMinValue) & 0xE0); // set every red pixel element to 255
-        data[i + 1] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x1C) << 3); // set every green pixel element to 255
-        data[i + 2] = (((array[arrayPointer] + -dataConfig.elementMinValue) & 0x3) << 6); // set every blue pixel element to 255
-        data[i + 3] = 255; // make this pixel opaque
-        arrayPointer++;
+        // create a new img object
+        var image = new Image();
+
+        // set the img.src to the canvas data url
+        image.src = canvas.toDataURL();
+
+        ctx.drawImage(image, 0, 0);
     }
 
-    // put the modified pixels back on the canvas
-    ctx.putImageData(imgData, 0, 0);
-
-    // create a new img object
-    var image = new Image();
-
-    // set the img.src to the canvas data url
-    image.src = canvas.toDataURL();
-
-    ctx.drawImage(image, 0, 0);
-}
+})();
