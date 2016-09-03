@@ -1,6 +1,7 @@
 /**
  * Created by alexey on 22.08.16.
  */
+//TODO:add buttons handling for qvga256, vga256, vga65k
 (function () {
     'use strict';
 

@@ -9,6 +9,7 @@ public class ResolutionColorConfig implements DataConfig {
     private volatile byte depth;//in bytes!
     private volatile byte minValue;
     private volatile byte maxValue;
+    private volatile String configName;
 
     @Override
     public int getHeight() {
@@ -54,6 +55,14 @@ public class ResolutionColorConfig implements DataConfig {
 
     public void setMaxValue(byte maxValue) {
         this.maxValue = maxValue;
+    }
+
+    public String getConfigName() {
+        return configName;
+    }
+
+    public void setConfigName(String configName) {
+        this.configName = configName;
     }
 
     @Override
