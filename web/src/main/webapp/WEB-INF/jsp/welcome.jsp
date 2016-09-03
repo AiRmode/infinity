@@ -4,11 +4,12 @@
 </head>
 <body>
 <h2>Welcome!</h2>
-<script defer src="../js/infinityWalker.js"></script>
-<script>
-    'use strict';
-    console.log('Hello:)');
-</script>
-<p>My first paragraph.</p>
+<canvas height='240' width='320' id='canvas'>Canvas</canvas>
+</br>
+<script async src="../js/infinityWalker.js"></script>
+<button id="qvga256">View QVGA@256 colors</button>
+<button id="vga256">View VGA@256 colors</button>
+<button id="vga65k">View VGA@65k colors</button>
+<p>:P</p>
 </body>
 </html>

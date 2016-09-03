@@ -12,6 +12,7 @@
     <properties>
         <spring.version>4.3.0.RELEASE</spring.version>
         <image.generator.version>1.0-SNAPSHOT</image.generator.version>
+        <testng.version>6.9.8</testng.version>
     </properties>
 
     <dependencies>
@@ -30,6 +31,14 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

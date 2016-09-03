@@ -3,7 +3,7 @@ package my.infinity;
 import my.infinity.dataConfig.DataConfig;
 
 import javax.annotation.PostConstruct;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -11,6 +11,12 @@ import java.util.Stack;
  * Created by alexey on 11.08.16.
  */
 public class InfinityWalker implements Runnable, Serializable {
+    public static final int SAVE_INTERVAL_IN_ITERATIONS = 100000;
+    public static final int START_NEW_INFINITY_WALK = 0;
+    public static final int CONTINUE_FROM_BACKUP_STATE = -1;
+    public static final String BACKUP_FILE_EXTENTION = ".out";
+    public static final String BACKUP_FILENAME_SUFFIX = "backupState" + BACKUP_FILE_EXTENTION;
+    private static final long serialVersionUID = 1548590164256893622L;
     private volatile Byte[] sourceArray;
     private volatile Byte[] filledArray;
     @SuppressWarnings("all")
@@ -28,6 +34,8 @@ public class InfinityWalker implements Runnable, Serializable {
 
     private volatile Stack<FrameItem> stack;
 
+    private volatile int backupCounter;
+
     public InfinityWalker(DataConfig dataConfig) {
         this.dataConfig = dataConfig;
     }
@@ -43,7 +51,6 @@ public class InfinityWalker implements Runnable, Serializable {
         //define array
         sourceArray = new Byte[height * width * depth];
         filledArray = new Byte[height * width * depth];
-        //calc last index
         //fill array with init and target data
         Arrays.fill(sourceArray, minValue);
         Arrays.fill(filledArray, maxValue);
@@ -58,13 +65,26 @@ public class InfinityWalker implements Runnable, Serializable {
 
     @Override
     public void run() {
-        walkStack(0);
+        String fileName = getBackupFileName();
+        File file = new File(fileName);
+        if (file.exists()) {
+            deserialize(file);//continue from previous backup
+            walkStack(CONTINUE_FROM_BACKUP_STATE);
+        } else {
+            walkStack(START_NEW_INFINITY_WALK);//start new walk
+        }
+    }
+
+    private String getBackupFileName() {
+        return dataConfig.getConfigName() + BACKUP_FILENAME_SUFFIX;
     }
 
     public void walkStack(int startingIndex) {
-        for (int index = 0; index <= sourceArray.length; index++) {
-            FrameItem frame = new FrameItem(index, minValue);
-            stack.push(frame);
+        if (startingIndex == START_NEW_INFINITY_WALK) {
+            for (int index = 0; index <= sourceArray.length; index++) {
+                FrameItem frame = new FrameItem(index, minValue);
+                stack.push(frame);
+            }
         }
         while (!stack.isEmpty()) {
             if (Thread.interrupted()) {
@@ -74,6 +94,10 @@ public class InfinityWalker implements Runnable, Serializable {
             if (frame.index == sourceArray.length) {
 //                System.out.println(Arrays.toString(sourceArray));
                 storeArrayCopy();
+                if (isBackupTime()) {
+                    String file = getBackupFileName();
+                    serialize(new File(file));
+                }
                 stack.pop();
                 continue;
             }
@@ -90,6 +114,16 @@ public class InfinityWalker implements Runnable, Serializable {
                 sourceArray[frame.index] = minValue;
                 stack.pop();
             }
+        }
+    }
+
+    private boolean isBackupTime() {
+        if (backupCounter == SAVE_INTERVAL_IN_ITERATIONS) {
+            backupCounter = 0;
+            return true;
+        } else {
+            backupCounter++;
+            return false;
         }
     }
 
@@ -110,5 +144,37 @@ public class InfinityWalker implements Runnable, Serializable {
 
     public DataConfig getDataConfig() {
         return dataConfig;
+    }
+
+    public void serialize(File file) {
+        try (OutputStream fos = new FileOutputStream(file.getName());
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this);
+            oos.flush();
+        } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+    }
+
+    public void deserialize(File file) {
+        try (FileInputStream fis = new FileInputStream(file.getName());
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            InfinityWalker walker = (InfinityWalker) ois.readObject();
+            restoreStateFromSerialized(walker);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void restoreStateFromSerialized(InfinityWalker walker) {
+        this.sourceArray = walker.sourceArray;
+        this.filledArray = walker.filledArray;
+        this.dataConfig = walker.dataConfig;
+        this.height = walker.height;
+        this.width = walker.width;
+        this.depth = walker.depth;
+        this.minValue = walker.minValue;
+        this.maxValue = walker.maxValue;
+        this.stack = walker.stack;
     }
 }

@@ -9,6 +9,7 @@
         <property name="width" value="640"/>
         <property name="maxValue" value="127"/>
         <property name="minValue" value="-128"/>
+        <property name="configName" value="vga256"/>
     </bean>
 
     <bean name="vga65kConfig" class="my.infinity.dataConfig.ResolutionColorConfig">
@@ -17,6 +18,7 @@
         <property name="width" value="640"/>
         <property name="maxValue" value="127"/>
         <property name="minValue" value="-128"/>
+        <property name="configName" value="vga65k"/>
     </bean>
 
     <bean name="qvga256Config" class="my.infinity.dataConfig.ResolutionColorConfig">
@@ -25,6 +27,7 @@
         <property name="width" value="320"/>
         <property name="maxValue" value="127"/>
         <property name="minValue" value="-128"/>
+        <property name="configName" value="qvga256"/>
     </bean>
 
     <bean name="testConfig" class="my.infinity.dataConfig.ResolutionColorConfig">
@@ -33,6 +36,7 @@
         <property name="width" value="4"/>
         <property name="maxValue" value="2"/>
         <property name="minValue" value="-1"/>
+        <property name="configName" value="test"/>
     </bean>
 
     <bean name="vga256Walker" class="my.infinity.InfinityWalker">
