@@ -37,8 +37,8 @@ public class WalkerController {
     public synchronized void init() {
         if (!isStarted.get()) {
             isStarted.set(true);
-            taskExecutorManager.execute(infinityVGA256Walker);
-            taskExecutorManager.execute(infinityVGA65KWalker);
+//            taskExecutorManager.execute(infinityVGA256Walker);
+//            taskExecutorManager.execute(infinityVGA65KWalker);
             taskExecutorManager.execute(infinityQVGA256Walker);
         }
     }

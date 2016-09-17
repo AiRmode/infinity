@@ -8,21 +8,6 @@
     var w = window;
     requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
-    $("#qvga256").on("click", function () {
-        console.log('qvga256');
-        startCustomWalker('qvga256StateJSON');
-    });
-
-    $("#vga256").on("click", function () {
-        console.log('vga256');
-        startCustomWalker('vga256StateJSON');
-    });
-
-    $("#vga65k").on("click", function () {
-        console.log('vga65k');
-        startCustomWalker('vga65KStateJSON');
-    });
-
     startCustomWalker('qvga256StateJSON');
 
     function startCustomWalker(url) {
